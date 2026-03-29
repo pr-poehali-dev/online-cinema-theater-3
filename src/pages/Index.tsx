@@ -78,7 +78,7 @@ const TV_CHANNELS = [
   { id: "match", name: "Матч ТВ", stream: "", logo: "⚽", category: "Спорт" },
   { id: "kultura", name: "Культура", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/kultura-hd/index.m3u8", logo: "🎨", category: "Культура" },
   { id: "tvk", name: "ТВК", stream: "", logo: "📻", category: "Региональные" },
-  { id: "karusel", name: "Карусель", stream: "https://streaming.televizor-24-tochka.ru/live/232.m3u8", logo: "🎠", category: "Детские" },
+  { id: "karusel", name: "Карусель", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_KARUSEL/variant.m3u8", logo: "🎠", category: "Детские" },
 ];
 
 const TV_SCHEDULE: Record<string, { time: string; title: string; desc?: string }[]> = {
