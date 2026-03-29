@@ -67,20 +67,35 @@ const CARTOONS = [
 ];
 
 const TV_CHANNELS = [
-  { id: "russia1", name: "Россия 1", url: "https://smotrim.ru/live/1", logo: "📺", category: "Федеральные" },
-  { id: "ntv", name: "НТВ", url: "https://www.ntv.ru/novosti/", logo: "📡", category: "Федеральные" },
-  { id: "5kanal", name: "Пятый канал", url: "https://www.5-tv.ru/online/", logo: "5️⃣", category: "Федеральные" },
-  { id: "otr", name: "ОТР", url: "https://otr-online.ru/programms/", logo: "🌐", category: "Федеральные" },
-  { id: "russia24", name: "Россия 24", url: "https://smotrim.ru/live/4", logo: "📰", category: "Новости" },
-  { id: "rentv", name: "РЕН ТВ", url: "https://ren.tv/live", logo: "🎬", category: "Развлечения" },
-  { id: "sts", name: "СТС", url: "https://ctc.ru/online/", logo: "🎭", category: "Развлечения" },
-  { id: "tnt", name: "ТНТ", url: "https://www.tnt-online.ru/live", logo: "😂", category: "Развлечения" },
-  { id: "match", name: "Матч ТВ", url: "https://matchtv.ru/on-air", logo: "⚽", category: "Спорт" },
-  { id: "kultura", name: "Культура", url: "https://smotrim.ru/live/19201", logo: "🎨", category: "Культура" },
-  { id: "tvk", name: "ТВК", url: "https://tvk6.ru/", logo: "📻", category: "Региональные" },
+  { id: "perviy", name: "Первый канал", stream: "http://rt-vlg-nn-htlive.cdn.ngenix.net/hls/CH_R03_OTT_VLG_NN_1TV/variant.m3u8?version=2", logo: "1️⃣", category: "Федеральные" },
+  { id: "russia1", name: "Россия 1", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/russia1-hd/index.m3u8", logo: "📺", category: "Федеральные" },
+  { id: "ntv", name: "НТВ", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_NTV/variant.m3u8", logo: "📡", category: "Федеральные" },
+  { id: "5kanal", name: "Пятый канал", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_5TV/variant.m3u8", logo: "5️⃣", category: "Федеральные" },
+  { id: "russia24", name: "Россия 24", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/abakan/russia24-sd/index.m3u8", logo: "📰", category: "Новости" },
+  { id: "rentv", name: "РЕН ТВ", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_RENTV/variant.m3u8", logo: "🎬", category: "Развлечения" },
+  { id: "sts", name: "СТС", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_STS/variant.m3u8", logo: "🎭", category: "Развлечения" },
+  { id: "tnt", name: "ТНТ", stream: "https://streaming.televizor-24-tochka.ru/live/38.m3u8", logo: "😂", category: "Развлечения" },
+  { id: "match", name: "Матч ТВ", stream: "", logo: "⚽", category: "Спорт" },
+  { id: "kultura", name: "Культура", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/kultura-hd/index.m3u8", logo: "🎨", category: "Культура" },
+  { id: "tvk", name: "ТВК", stream: "", logo: "📻", category: "Региональные" },
 ];
 
 const TV_SCHEDULE: Record<string, { time: string; title: string; desc?: string }[]> = {
+  perviy: [
+    { time: "06:00", title: "Доброе утро" },
+    { time: "09:00", title: "Новости" },
+    { time: "09:15", title: "Контрольная закупка" },
+    { time: "10:00", title: "Жить здорово!" },
+    { time: "11:00", title: "Время" },
+    { time: "12:00", title: "Дневник" },
+    { time: "13:00", title: "Новости" },
+    { time: "14:00", title: "Сериал дня" },
+    { time: "16:00", title: "Мужское / Женское" },
+    { time: "18:00", title: "Вечерние новости" },
+    { time: "19:00", title: "Пусть говорят" },
+    { time: "21:00", title: "Время", desc: "Главные новости дня" },
+    { time: "21:30", title: "Вечерний прайм" },
+  ],
   russia1: [
     { time: "07:00", title: "Утро России" },
     { time: "09:00", title: "О самом главном", desc: "Ток-шоу о здоровье" },
@@ -536,36 +551,122 @@ function CartoonsSection({ favorites, toggleFav, onSelect }: {
   );
 }
 
-function TVSection() {
-  const cats = [...new Set(TV_CHANNELS.map(c => c.category))];
+function HlsPlayer({ stream, channelName }: { stream: string; channelName: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setError(false);
+    setLoading(true);
+    const video = videoRef.current;
+    if (!video || !stream) { setLoading(false); return; }
+
+    import("hls.js").then(({ default: Hls }) => {
+      if (Hls.isSupported()) {
+        const hls = new Hls({ enableWorker: false });
+        hls.loadSource(stream);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => { setLoading(false); video.play().catch(() => {}); });
+        hls.on(Hls.Events.ERROR, (_e: unknown, data: { fatal: boolean }) => { if (data.fatal) setError(true); setLoading(false); });
+        return () => hls.destroy();
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = stream;
+        video.addEventListener("loadedmetadata", () => { setLoading(false); video.play().catch(() => {}); });
+        video.addEventListener("error", () => { setError(true); setLoading(false); });
+      } else {
+        setError(true); setLoading(false);
+      }
+    });
+  }, [stream]);
+
+  if (!stream) return (
+    <div className="w-full aspect-video bg-[#111] rounded-xl flex flex-col items-center justify-center gap-3 border border-white/8">
+      <Icon name="Tv" size={36} className="text-white/15" />
+      <p className="text-white/30 text-sm">Трансляция скоро будет добавлена</p>
+    </div>
+  );
+
   return (
-    <div className="pt-24 min-h-screen max-w-7xl mx-auto px-4 sm:px-6 pb-20">
-      <div className="flex items-center gap-3 mb-8 animate-fade-in">
-        <h1 className="text-4xl font-display font-bold text-white">ТВ-КАНАЛЫ</h1>
-        <div className="flex items-center gap-1.5">
-          <div className="live-dot" />
-          <span className="text-white/45 text-sm">В эфире</span>
+    <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden border border-white/8">
+      {loading && !error && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#111] z-10">
+          <div className="w-10 h-10 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+          <p className="text-white/40 text-sm">Загрузка {channelName}...</p>
         </div>
+      )}
+      {error && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#111] z-10">
+          <Icon name="WifiOff" size={36} className="text-white/20" />
+          <p className="text-white/40 text-sm text-center px-6">Не удалось подключиться к трансляции</p>
+          <p className="text-white/20 text-xs">Попробуйте обновить страницу</p>
+        </div>
+      )}
+      <video
+        ref={videoRef}
+        className="w-full h-full"
+        controls
+        muted
+        playsInline
+        style={{ display: error ? "none" : "block" }}
+      />
+    </div>
+  );
+}
+
+function TVSection({ initialChannelId }: { initialChannelId?: string }) {
+  const [activeChannel, setActiveChannel] = useState(
+    TV_CHANNELS.find(c => c.id === initialChannelId) || TV_CHANNELS[0]
+  );
+  const cats = [...new Set(TV_CHANNELS.map(c => c.category))];
+
+  return (
+    <div className="pt-20 min-h-screen max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+      {/* Player */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4 mt-4">
+          <span className="text-3xl">{activeChannel.logo}</span>
+          <h1 className="text-3xl font-display font-bold text-white">{activeChannel.name}</h1>
+          <div className="flex items-center gap-1.5 ml-2">
+            <div className="live-dot" />
+            <span className="text-white/45 text-sm font-medium">Прямой эфир</span>
+          </div>
+        </div>
+        <HlsPlayer stream={activeChannel.stream} channelName={activeChannel.name} />
       </div>
+
+      {/* Channel grid */}
+      <h2 className="text-xl font-display font-bold text-white mb-5 flex items-center gap-3">
+        ТВ-КАНАЛЫ
+        <span className="text-xs font-sans text-white/30 uppercase tracking-widest">— выберите канал</span>
+      </h2>
       {cats.map(cat => (
-        <div key={cat} className="mb-10">
-          <h2 className="text-xs font-semibold text-white/35 uppercase tracking-widest mb-4">{cat}</h2>
+        <div key={cat} className="mb-8">
+          <h3 className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">{cat}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
             {TV_CHANNELS.filter(c => c.category === cat).map(ch => (
-              <a key={ch.id} href={ch.url} target="_blank" rel="noopener noreferrer"
-                className="group bg-[#1c1c1c] hover:bg-[#262626] border border-white/6 hover:border-primary/35 rounded-xl p-4 flex flex-col items-center gap-3 transition-all duration-200 card-hover">
+              <button key={ch.id} onClick={() => setActiveChannel(ch)}
+                className={`group flex flex-col items-center gap-2.5 p-4 rounded-xl border transition-all duration-200 card-hover ${
+                  activeChannel.id === ch.id
+                    ? "bg-primary/12 border-primary/50 shadow-lg shadow-primary/10"
+                    : "bg-[#1c1c1c] border-white/6 hover:bg-[#262626] hover:border-primary/25"
+                }`}>
                 <div className="text-4xl">{ch.logo}</div>
                 <div className="text-center">
-                  <p className="text-white font-semibold text-sm">{ch.name}</p>
-                  <div className="flex items-center justify-center gap-1 mt-1">
-                    <div className="live-dot" style={{ width: 5, height: 5 }} />
-                    <span className="text-white/35 text-xs">Прямой эфир</span>
-                  </div>
+                  <p className={`font-semibold text-sm ${activeChannel.id === ch.id ? "text-primary" : "text-white/85"}`}>{ch.name}</p>
+                  {activeChannel.id === ch.id ? (
+                    <div className="flex items-center justify-center gap-1 mt-1">
+                      <div className="live-dot" style={{ width: 5, height: 5 }} />
+                      <span className="text-primary text-xs">Смотрю</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-1 mt-1">
+                      <div className="live-dot" style={{ width: 5, height: 5 }} />
+                      <span className="text-white/30 text-xs">Прямой эфир</span>
+                    </div>
+                  )}
                 </div>
-                <span className="text-primary/55 group-hover:text-primary text-xs flex items-center gap-1 transition-colors">
-                  <Icon name="ExternalLink" size={10} /> Смотреть
-                </span>
-              </a>
+              </button>
             ))}
           </div>
         </div>
@@ -632,10 +733,12 @@ function ScheduleSection() {
               );
             })}
           </div>
-          <a href={selected.url} target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-primary text-white font-semibold px-5 py-2.5 rounded-xl hover:bg-orange-500 transition-colors text-sm">
-            <Icon name="Tv" size={15} /> Смотреть {selected.name}
-          </a>
+          {selected.stream && (
+            <a href={selected.stream} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-primary text-white font-semibold px-5 py-2.5 rounded-xl hover:bg-orange-500 transition-colors text-sm">
+              <Icon name="Tv" size={15} /> Смотреть {selected.name} онлайн
+            </a>
+          )}
         </div>
       </div>
     </div>
@@ -671,12 +774,13 @@ function FavoritesSection({ favorites, toggleFav, onSelect }: {
   );
 }
 
-function HomeSection({ onCartoonSelect, onHeroWatch, onHeroInfo, favorites, toggleFav }: {
+function HomeSection({ onCartoonSelect, onHeroWatch, onHeroInfo, favorites, toggleFav, onTvSelect }: {
   onCartoonSelect: (id: string) => void;
   onHeroWatch: () => void;
   onHeroInfo: () => void;
   favorites: Set<string>;
   toggleFav: (id: string) => void;
+  onTvSelect: (id: string) => void;
 }) {
   return (
     <div className="min-h-screen">
@@ -702,11 +806,11 @@ function HomeSection({ onCartoonSelect, onHeroWatch, onHeroInfo, favorites, togg
         </div>
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
           {TV_CHANNELS.slice(0, 6).map(ch => (
-            <a key={ch.id} href={ch.url} target="_blank" rel="noopener noreferrer"
+            <button key={ch.id} onClick={() => onTvSelect(ch.id)}
               className="bg-[#1c1c1c] hover:bg-[#262626] border border-white/6 hover:border-primary/30 rounded-xl p-3 flex flex-col items-center gap-2 transition-all card-hover">
               <span className="text-3xl">{ch.logo}</span>
               <p className="text-white/75 text-xs font-semibold text-center">{ch.name}</p>
-            </a>
+            </button>
           ))}
         </div>
       </div>
@@ -719,6 +823,7 @@ function HomeSection({ onCartoonSelect, onHeroWatch, onHeroInfo, favorites, togg
 export default function Index() {
   const [section, setSection] = useState<Section>("home");
   const [selectedCartoon, setSelectedCartoon] = useState<string | null>(null);
+  const [selectedTvChannel, setSelectedTvChannel] = useState<string | undefined>(undefined);
   const [searchOpen, setSearchOpen] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
@@ -736,6 +841,12 @@ export default function Index() {
     window.scrollTo({ top: 0 });
   }
 
+  function openTV(channelId?: string) {
+    setSelectedTvChannel(channelId);
+    setSection("tv");
+    window.scrollTo({ top: 0 });
+  }
+
   const cartoon = CARTOONS.find(c => c.id === selectedCartoon);
 
   return (
@@ -750,7 +861,14 @@ export default function Index() {
         onSelect={id => { openCartoon(id); }} />
 
       {section === "home" && (
-        <HomeSection onCartoonSelect={openCartoon} onHeroWatch={() => openCartoon("geroyichiki")} onHeroInfo={() => openCartoon("geroyichiki")} favorites={favorites} toggleFav={toggleFav} />
+        <HomeSection
+          onCartoonSelect={openCartoon}
+          onHeroWatch={() => openCartoon("geroyichiki")}
+          onHeroInfo={() => openCartoon("geroyichiki")}
+          favorites={favorites}
+          toggleFav={toggleFav}
+          onTvSelect={openTV}
+        />
       )}
       {section === "cartoons" && !selectedCartoon && (
         <CartoonsSection favorites={favorites} toggleFav={toggleFav} onSelect={openCartoon} />
@@ -758,7 +876,7 @@ export default function Index() {
       {section === "cartoons" && cartoon && (
         <CartoonDetail cartoon={cartoon} onBack={() => setSelectedCartoon(null)} isFav={favorites.has(cartoon.id)} onFav={() => toggleFav(cartoon.id)} />
       )}
-      {section === "tv" && <TVSection />}
+      {section === "tv" && <TVSection initialChannelId={selectedTvChannel} />}
       {section === "schedule" && <ScheduleSection />}
       {section === "favorites" && <FavoritesSection favorites={favorites} toggleFav={toggleFav} onSelect={openCartoon} />}
     </div>
