@@ -67,18 +67,18 @@ const CARTOONS = [
 ];
 
 const TV_CHANNELS = [
-  { id: "perviy", name: "Первый канал", stream: "http://rt-vlg-nn-htlive.cdn.ngenix.net/hls/CH_R03_OTT_VLG_NN_1TV/variant.m3u8?version=2", logo: "1️⃣", category: "Федеральные" },
-  { id: "russia1", name: "Россия 1", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/russia1-hd/index.m3u8", logo: "📺", category: "Федеральные" },
-  { id: "ntv", name: "НТВ", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_NTV/variant.m3u8", logo: "📡", category: "Федеральные" },
-  { id: "5kanal", name: "Пятый канал", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_5TV/variant.m3u8", logo: "5️⃣", category: "Федеральные" },
-  { id: "russia24", name: "Россия 24", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/abakan/russia24-sd/index.m3u8", logo: "📰", category: "Новости" },
-  { id: "rentv", name: "РЕН ТВ", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_RENTV/variant.m3u8", logo: "🎬", category: "Развлечения" },
-  { id: "sts", name: "СТС", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_STS/variant.m3u8", logo: "🎭", category: "Развлечения" },
-  { id: "tnt", name: "ТНТ", stream: "https://streaming.televizor-24-tochka.ru/live/38.m3u8", logo: "😂", category: "Развлечения" },
-  { id: "match", name: "Матч ТВ", stream: "", logo: "⚽", category: "Спорт" },
-  { id: "kultura", name: "Культура", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/kultura-hd/index.m3u8", logo: "🎨", category: "Культура" },
-  { id: "tvk", name: "ТВК", stream: "", logo: "📻", category: "Региональные" },
-  { id: "karusel", name: "Карусель", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_KARUSEL/variant.m3u8", logo: "🎠", category: "Детские" },
+  { id: "perviy", name: "Первый канал", stream: "http://rt-vlg-nn-htlive.cdn.ngenix.net/hls/CH_R03_OTT_VLG_NN_1TV/variant.m3u8?version=2", logo: "1️⃣", img: "https://cdn.poehali.dev/projects/ada8d6aa-630f-4917-b7c9-cdd2153781f2/bucket/79ba3114-0222-48b5-b6f1-e98e6a1693fc.jpeg", category: "Федеральные" },
+  { id: "russia1", name: "Россия 1", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/russia1-hd/index.m3u8", logo: "📺", img: "https://cdn.poehali.dev/projects/ada8d6aa-630f-4917-b7c9-cdd2153781f2/bucket/3e5ed4c9-6ddc-4fc5-b7d9-8a7206255c83.jpeg", category: "Федеральные" },
+  { id: "ntv", name: "НТВ", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_NTV/variant.m3u8", logo: "📡", img: "https://cdn.poehali.dev/projects/ada8d6aa-630f-4917-b7c9-cdd2153781f2/bucket/934a4d36-d244-4d5f-a958-1b0378e3fe10.jpeg", category: "Федеральные" },
+  { id: "5kanal", name: "Пятый канал", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_5TV/variant.m3u8", logo: "5️⃣", img: "https://cdn.poehali.dev/projects/ada8d6aa-630f-4917-b7c9-cdd2153781f2/bucket/ae8f9683-a8a8-4ae4-8c98-0a505ec4f6e1.jpeg", category: "Федеральные" },
+  { id: "russia24", name: "Россия 24", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/abakan/russia24-sd/index.m3u8", logo: "📰", img: "https://cdn.poehali.dev/projects/ada8d6aa-630f-4917-b7c9-cdd2153781f2/bucket/034201ec-b54a-43ea-9333-3eca707343b9.jpeg", category: "Новости" },
+  { id: "rentv", name: "РЕН ТВ", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_RENTV/variant.m3u8", logo: "🎬", img: "", category: "Развлечения" },
+  { id: "sts", name: "СТС", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_STS/variant.m3u8", logo: "🎭", img: "", category: "Развлечения" },
+  { id: "tnt", name: "ТНТ", stream: "https://streaming.televizor-24-tochka.ru/live/38.m3u8", logo: "😂", img: "", category: "Развлечения" },
+  { id: "match", name: "Матч ТВ", stream: "", logo: "⚽", img: "", category: "Спорт" },
+  { id: "kultura", name: "Культура", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/kultura-hd/index.m3u8", logo: "🎨", img: "", category: "Культура" },
+  { id: "tvk", name: "ТВК", stream: "", logo: "📻", img: "", category: "Региональные" },
+  { id: "karusel", name: "Карусель", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_KARUSEL/variant.m3u8", logo: "🎠", img: "", category: "Детские" },
 ];
 
 const TV_SCHEDULE: Record<string, { time: string; title: string; desc?: string }[]> = {
@@ -626,7 +626,12 @@ function TVSection({ initialChannelId }: { initialChannelId?: string }) {
       {/* Player */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-4 mt-4">
-          <span className="text-3xl">{activeChannel.logo}</span>
+          <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center bg-[#111] shrink-0">
+            {activeChannel.img
+              ? <img src={activeChannel.img} alt={activeChannel.name} className="w-full h-full object-cover" />
+              : <span className="text-2xl">{activeChannel.logo}</span>
+            }
+          </div>
           <h1 className="text-3xl font-display font-bold text-white">{activeChannel.name}</h1>
           <div className="flex items-center gap-1.5 ml-2">
             <div className="live-dot" />
@@ -652,7 +657,12 @@ function TVSection({ initialChannelId }: { initialChannelId?: string }) {
                     ? "bg-primary/12 border-primary/50 shadow-lg shadow-primary/10"
                     : "bg-[#1c1c1c] border-white/6 hover:bg-[#262626] hover:border-primary/25"
                 }`}>
-                <div className="text-4xl">{ch.logo}</div>
+                <div className="w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center bg-[#111]">
+                  {ch.img
+                    ? <img src={ch.img} alt={ch.name} className="w-full h-full object-cover" />
+                    : <span className="text-4xl">{ch.logo}</span>
+                  }
+                </div>
                 <div className="text-center">
                   <p className={`font-semibold text-sm ${activeChannel.id === ch.id ? "text-primary" : "text-white/85"}`}>{ch.name}</p>
                   {activeChannel.id === ch.id ? (
