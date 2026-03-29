@@ -417,38 +417,25 @@ function CartoonDetail({ cartoon, onBack, isFav, onFav }: {
   const [activeSeason, setActiveSeason] = useState(1);
   const [watchingUrl, setWatchingUrl] = useState<string | null>(null);
   const [watchingTitle, setWatchingTitle] = useState("");
+  const playerRef = useRef<HTMLDivElement>(null);
 
+  function getVkEmbedUrl(url: string) {
+    const match = url.match(/video(-?\d+_\d+)/);
+    if (match) return `https://vk.com/video_ext.php?oid=${match[1].split('_')[0]}&id=${match[1].split('_')[1]}&hd=2&autoplay=1`;
+    return null;
+  }
+
+  function playEpisode(url: string, title: string) {
+    setWatchingUrl(url);
+    setWatchingTitle(title);
+    setTimeout(() => playerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  }
+
+  const embedUrl = watchingUrl ? getVkEmbedUrl(watchingUrl) : null;
   const season = cartoon.seasonData.find(s => s.season === activeSeason);
 
   return (
     <div className="pt-16 min-h-screen">
-      {watchingUrl && (
-        <div className="fixed inset-0 z-[200] bg-black flex flex-col">
-          <div className="flex items-center gap-3 px-4 py-3 bg-[#111] border-b border-white/8">
-            <button onClick={() => setWatchingUrl(null)}
-              className="text-white/55 hover:text-white transition-colors flex items-center gap-2 text-sm">
-              <Icon name="ArrowLeft" size={15} /> Назад
-            </button>
-            <span className="text-white/30 text-sm">|</span>
-            <span className="text-white/70 text-sm font-medium truncate">{cartoon.title} — {watchingTitle}</span>
-          </div>
-          <div className="flex-1 flex items-center justify-center bg-black p-6">
-            <div className="w-full max-w-lg text-center">
-              <div className="bg-[#1c1c1c] rounded-2xl p-10 border border-white/8">
-                <div className="w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center mx-auto mb-5">
-                  <Icon name="Play" size={28} className="text-primary" />
-                </div>
-                <h3 className="text-white text-xl font-display font-semibold mb-2">{watchingTitle}</h3>
-                <p className="text-white/40 text-sm mb-7">Серия откроется на ВКонтакте</p>
-                <a href={watchingUrl} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3 rounded-xl hover:bg-orange-500 transition-colors">
-                  <Icon name="ExternalLink" size={16} /> Открыть серию
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="relative h-[45vh] overflow-hidden">
         <img src={cartoon.cover || GEROYICHIKI_COVER} alt={cartoon.title}
@@ -480,7 +467,7 @@ function CartoonDetail({ cartoon, onBack, isFav, onFav }: {
             <div className="flex items-center gap-3">
               <button onClick={() => {
                 const ep = cartoon.seasonData[0]?.episodes[0];
-                if (ep) { setWatchingUrl(ep.url); setWatchingTitle(`С1 Э1 — ${ep.title}`); }
+                if (ep) { playEpisode(ep.url, `С1 Э1 — ${ep.title}`); }
               }} className="flex items-center gap-2 bg-primary hover:bg-orange-500 text-white font-bold px-6 py-2.5 rounded-xl transition-all text-sm">
                 <Icon name="Play" size={15} /> Смотреть
               </button>
@@ -493,8 +480,38 @@ function CartoonDetail({ cartoon, onBack, isFav, onFav }: {
           </div>
         </div>
 
+        {/* Встроенный плеер */}
+        <div ref={playerRef} className="mt-8">
+          {embedUrl ? (
+            <div className="animate-fade-in">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-white font-semibold text-sm truncate">{watchingTitle}</p>
+                <button onClick={() => setWatchingUrl(null)}
+                  className="text-white/40 hover:text-white transition-colors flex items-center gap-1 text-xs shrink-0 ml-3">
+                  <Icon name="X" size={14} /> Закрыть
+                </button>
+              </div>
+              <div className="w-full aspect-video rounded-2xl overflow-hidden bg-black border border-white/8">
+                <iframe
+                  src={embedUrl}
+                  className="w-full h-full"
+                  allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="w-full aspect-video rounded-2xl bg-[#161616] border border-white/8 flex flex-col items-center justify-center gap-3">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <Icon name="Play" size={28} className="text-primary/60" />
+              </div>
+              <p className="text-white/35 text-sm">Выберите серию ниже, чтобы начать просмотр</p>
+            </div>
+          )}
+        </div>
+
         {cartoon.seasonData.length > 0 && (
-          <div className="mt-10">
+          <div className="mt-8">
             <div className="flex items-center gap-3 mb-5">
               <h2 className="text-2xl font-display font-semibold text-white">Серии</h2>
               <div className="flex gap-2">
@@ -512,10 +529,13 @@ function CartoonDetail({ cartoon, onBack, isFav, onFav }: {
                 {season.episodes.map((ep, i) => (
                   <div key={ep.n}
                     className={`episode-row flex items-center gap-4 px-5 py-3.5 cursor-pointer ${i < season.episodes.length - 1 ? "border-b border-white/5" : ""}`}
-                    onClick={() => { setWatchingUrl(ep.url); setWatchingTitle(`С${activeSeason} Э${ep.n} — ${ep.title}`); }}>
-                    <span className="text-white/25 text-sm w-7 text-right shrink-0 font-mono">{ep.n}</span>
-                    <p className="flex-1 text-white/85 text-sm font-medium">{ep.title}</p>
-                    <Icon name="Play" size={14} className="text-white/25 shrink-0" />
+                    onClick={() => playEpisode(ep.url, `С${activeSeason} Э${ep.n} — ${ep.title}`)}>
+                    <span className={`text-sm w-7 text-right shrink-0 font-mono ${watchingUrl === ep.url ? "text-primary font-bold" : "text-white/25"}`}>{ep.n}</span>
+                    <p className={`flex-1 text-sm font-medium ${watchingUrl === ep.url ? "text-primary" : "text-white/85"}`}>{ep.title}</p>
+                    {watchingUrl === ep.url
+                      ? <Icon name="Volume2" size={14} className="text-primary shrink-0" />
+                      : <Icon name="Play" size={14} className="text-white/25 shrink-0" />
+                    }
                   </div>
                 ))}
               </div>
