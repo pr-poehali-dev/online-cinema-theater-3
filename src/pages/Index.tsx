@@ -79,6 +79,8 @@ const TV_CHANNELS = [
   { id: "kultura", name: "Культура", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/kultura-hd/index.m3u8", logo: "🎨", img: "", category: "Культура" },
   { id: "tvk", name: "ТВК", stream: "", logo: "📻", img: "", category: "Региональные" },
   { id: "karusel", name: "Карусель", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_KARUSEL/variant.m3u8", logo: "🎠", img: "", category: "Детские" },
+  { id: "multimuzika", name: "Мультимузыка", stream: "http://31.148.48.15/Multimuzika/index.m3u8", logo: "🎵", img: "", category: "Детские" },
+  { id: "multilandiya", name: "Мультиландия", stream: "http://31.148.48.15/Multilandiya/index.m3u8", logo: "🌈", img: "", category: "Детские" },
 ];
 
 const TV_SCHEDULE: Record<string, { time: string; title: string; desc?: string }[]> = {
