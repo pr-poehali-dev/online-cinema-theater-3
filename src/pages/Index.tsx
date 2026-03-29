@@ -4,7 +4,7 @@ import Icon from "@/components/ui/icon";
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
 const GEROYICHIKI_COVER =
-  "https://cdn.poehali.dev/projects/ada8d6aa-630f-4917-b7c9-cdd2153781f2/files/050b3cf0-d11d-49e7-916e-75c9e5346e3c.jpg";
+  "https://cdn.poehali.dev/projects/ada8d6aa-630f-4917-b7c9-cdd2153781f2/bucket/2b4c69d2-e962-49c8-848b-cbcf2f454e6f.jpeg";
 
 const EPISODES_S1 = [
   { n: 1, title: "Новые герои", url: "https://m.vkvideo.ru/playlist/-234589463_5/video-234589463_456239052?from=video&linked=1&t=4s" },
