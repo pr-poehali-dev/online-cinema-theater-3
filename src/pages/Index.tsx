@@ -74,7 +74,7 @@ const TV_CHANNELS = [
   { id: "russia24", name: "Россия 24", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/abakan/russia24-sd/index.m3u8", logo: "📰", img: "https://cdn.poehali.dev/projects/ada8d6aa-630f-4917-b7c9-cdd2153781f2/bucket/034201ec-b54a-43ea-9333-3eca707343b9.jpeg", category: "Новости" },
   { id: "rentv", name: "РЕН ТВ", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_RENTV/variant.m3u8", logo: "🎬", img: "", category: "Развлечения" },
   { id: "sts", name: "СТС", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_STS/variant.m3u8", logo: "🎭", img: "", category: "Развлечения" },
-  { id: "tnt", name: "ТНТ", stream: "https://streaming.televizor-24-tochka.ru/live/38.m3u8", logo: "😂", img: "", category: "Развлечения" },
+  { id: "tnt", name: "ТНТ", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_TNT/variant.m3u8", logo: "😂", img: "", category: "Развлечения" },
   { id: "match", name: "Матч ТВ", stream: "", logo: "⚽", img: "", category: "Спорт" },
   { id: "kultura", name: "Культура", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/kultura-hd/index.m3u8", logo: "🎨", img: "", category: "Культура" },
   { id: "tvk", name: "ТВК", stream: "", logo: "📻", img: "", category: "Региональные" },
