@@ -210,7 +210,207 @@ const TV_SCHEDULE: Record<string, { time: string; title: string; desc?: string }
   ],
 };
 
-type Section = "home" | "cartoons" | "tv" | "schedule" | "favorites";
+// ─── KARUSEL SCHEDULE ─────────────────────────────────────────────────────────
+
+type KaruselShow = {
+  time: string;
+  title: string;
+  desc?: string;
+  rating?: string;
+  cover?: string;
+  block?: string;
+};
+
+// Расписание Карусели (будние / выходные)
+const KARUSEL_WEEKDAY: KaruselShow[] = [
+  { time: "01:00", title: "Приключения Пети и Волка", rating: "12+", desc: "Дело о Нечаянном проклятии — Дело о Тараканах — Дело о Хрустальном шаре — Дело о Бзазе и мужских хобби" },
+  { time: "02:30", title: "Маша и Медведь", rating: "0+", desc: "Кушать подано! — Чудо в перьях — Спасайся кто может! — Мечтать полезно — Магазин игрушек" },
+  { time: "04:00", title: "Маша и Медведь. Песенки для малышей", rating: "0+", desc: "Бинго" },
+  { time: "04:05", title: "Маша и Медведь", rating: "0+", desc: "Дочки-матери — Унесённый ветром — Впервые на арене — Вот так штука! — Что ты ешь?" },
+  { time: "05:00", title: "Лунтик", rating: "0+", block: "Ранние пташки", desc: "Туземцы — Тема для поэмы — Потоп — Ленивый жучок — Мы тоже умные — Тайное общество — Кувшин" },
+  { time: "07:00", title: "С добрым утром, малыши!", rating: "0+", desc: "Герои легендарной программы «Спокойной ночи, малыши!» теперь не только укладывают детей спать" },
+  { time: "07:25", title: "Погода", rating: "0+", desc: "Актуальный прогноз погоды от ведущих программы «Спокойной ночи, малыши!»" },
+  { time: "07:30", title: "Ум и Хрум", rating: "0+", desc: "Рыцарь — Пахучий случай — Чёрная дыра — Строитель — Хрумолёт — Блогер — Вглубь земли — Драконий фрукт" },
+  { time: "10:45", title: "Студия Каляки-Маляки", rating: "0+", desc: "Оркестр кактусов" },
+  { time: "11:10", title: "Буба", rating: "6+", desc: "Кухня — Ванная комната — Детская комната — Кабинет — Игровая комната — Кабинет биологии" },
+  { time: "13:45", title: "Инфинити Надо", rating: "6+", desc: "Принц Гарольд — Самый сильный в клане Огня" },
+  { time: "14:15", title: "Минифорс. Сила динозавров", rating: "6+", desc: "Решающее сражение" },
+  { time: "14:30", title: "Навигатор. У нас гости!", rating: "0+", desc: "«Навигатор. У нас гости!» — еженедельное приложение к программе «Навигатор. Новости»" },
+  { time: "14:35", title: "Погода", rating: "0+", desc: "Актуальный прогноз погоды от ведущих программы «Спокойной ночи, малыши!»" },
+  { time: "14:40", title: "Фиксики. Дай пять!", rating: "0+", desc: "Лошадиные силы — Принцесса — Марсоход — Бабочка — Рыцарь — Домовой — Паровоз — Квест — ДНК" },
+  { time: "17:30", title: "Лео и Тиг", rating: "0+", desc: "Шкура солнца — Таинственная пещера — Таёжная сказка — Праздник для тебя — Осень в тайге" },
+  { time: "21:00", title: "Спокойной ночи, малыши!", rating: "0+", desc: "Передача «Спокойной ночи, малыши!» — уникальное явление на телевидении. Программа существует с сентября 1964 года" },
+  { time: "21:15", title: "Маша и Медведь", rating: "0+", desc: "Колесо дружбы — Три пятачка — Вишенка на торте — Что ты ешь? — Медовый день — Грибной дождь" },
+  { time: "23:00", title: "Дикие Скричеры!", rating: "6+", desc: "Иллюзия финала" },
+  { time: "23:15", title: "Приключения Пети и Волка", rating: "12+", desc: "Дело Рыб и их будущего — Дело о Невидимках — Дело о Прирождённом победителе" },
+  { time: "02:00", title: "Маша и Медведь", rating: "0+", desc: "Ананас, да не для вас! — Круги на траве — Пикник в сиреневых тонах — Званый гость" },
+];
+
+const KARUSEL_WEEKEND: KaruselShow[] = [
+  { time: "01:00", title: "Приключения Пети и Волка", rating: "12+", desc: "Дело о Новом Де-Кроле — Дело о Крылатой любви — Дело о Гипнотизёре" },
+  { time: "02:00", title: "Маша и Медведь", rating: "0+", desc: "Медвежий угол — Складная песня — Одним прекрасным утром — Скоро в школу!" },
+  { time: "04:30", title: "Маша и Медведь. Песенки для малышей", rating: "0+", desc: "Бинго" },
+  { time: "04:35", title: "Маша и Медведь", rating: "0+", desc: "Дочки-матери — Унесённый ветром — Впервые на арене" },
+  { time: "05:00", title: "Лунтик", rating: "0+", block: "Ранние пташки", desc: "День варенья — Задание — Загадка — Добрый поступок — Помощник" },
+  { time: "07:00", title: "С добрым утром, малыши!", rating: "0+", desc: "Выходной выпуск для самых маленьких" },
+  { time: "07:30", title: "Погода", rating: "0+", desc: "Актуальный прогноз погоды от ведущих программы «Спокойной ночи, малыши!»" },
+  { time: "07:35", title: "Ум и Хрум", rating: "0+", desc: "Цирк — Охота за сокровищами — Летающий корабль" },
+  { time: "09:00", title: "Мультсериал для малышей", rating: "0+", desc: "Маша и Медведь — Лунтик — Фиксики — Смешарики" },
+  { time: "11:00", title: "Буба", rating: "6+", desc: "Парк развлечений — Зоопарк — Стройка" },
+  { time: "12:00", title: "Фиксики. Дай пять!", rating: "0+", desc: "Конкурс — Автомобиль — Зонтик — Шахматы — Мяч" },
+  { time: "14:00", title: "Лео и Тиг", rating: "0+", desc: "Журавлиный полёт — Осьминог — Новый домик" },
+  { time: "16:00", title: "Дикие Скричеры!", rating: "6+", desc: "Турнир — Побег — Тайна острова" },
+  { time: "18:00", title: "Инфинити Надо", rating: "6+", desc: "Финал сезона — Победитель" },
+  { time: "19:30", title: "Навигатор. Новости", rating: "0+", desc: "Еженедельный выпуск" },
+  { time: "21:00", title: "Спокойной ночи, малыши!", rating: "0+", desc: "Выходной выпуск" },
+  { time: "21:15", title: "Маша и Медведь", rating: "0+", desc: "Большая стирка — Спортивный интерес — Следы невиданных зверей" },
+  { time: "23:00", title: "Приключения Пети и Волка", rating: "12+", desc: "Вечерний блок" },
+];
+
+function getKaruselSchedule(dayOffset: number): KaruselShow[] {
+  const d = new Date();
+  d.setDate(d.getDate() + dayOffset);
+  const dow = d.getDay(); // 0=sun, 6=sat
+  return (dow === 0 || dow === 6) ? KARUSEL_WEEKEND : KARUSEL_WEEKDAY;
+}
+
+// ─── KARUSEL SCHEDULE SECTION ─────────────────────────────────────────────────
+
+function KaruselScheduleSection({ onWatchLive }: { onWatchLive?: () => void }) {
+  const today = new Date();
+  const [dayOffset, setDayOffset] = useState(0);
+
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() + (i - 0));
+    return d;
+  });
+
+  const selectedDate = new Date(today);
+  selectedDate.setDate(today.getDate() + dayOffset);
+
+  const schedule = getKaruselSchedule(dayOffset);
+
+  const nowMins = today.getHours() * 60 + today.getMinutes();
+  function toMins(t: string) {
+    const [h, m] = t.split(":").map(Number);
+    return h * 60 + (m || 0);
+  }
+
+  // Find current show (only for today)
+  let curIdx = -1;
+  if (dayOffset === 0) {
+    curIdx = schedule.reduce((best, item, i) => toMins(item.time) <= nowMins ? i : best, -1);
+  }
+
+  const dayNames = ["вс", "пн", "вт", "ср", "чт", "пт", "сб"];
+  const monthNames = ["янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+
+  return (
+    <div className="pt-24 min-h-screen max-w-3xl mx-auto px-4 sm:px-6 pb-20">
+      {/* Header */}
+      <div className="mb-6 animate-fade-in flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-[#00a8e8] flex items-center justify-center text-xl shrink-0">🎠</div>
+        <div>
+          <h1 className="text-3xl font-display font-bold text-white leading-tight">Карусель</h1>
+          <p className="text-white/35 text-xs">Телепрограмма</p>
+        </div>
+        <div className="ml-auto flex items-center gap-1.5">
+          <div className="live-dot" />
+          <span className="text-white/40 text-xs">Прямой эфир</span>
+        </div>
+      </div>
+
+      {/* Day picker */}
+      <div className="flex gap-2 overflow-x-auto no-scrollbar mb-6 pb-1">
+        {days.map((d, i) => {
+          const isToday = i === 0;
+          const isSelected = dayOffset === i;
+          return (
+            <button
+              key={i}
+              onClick={() => setDayOffset(i)}
+              className={`flex flex-col items-center px-4 py-2.5 rounded-2xl shrink-0 transition-all border font-semibold ${
+                isSelected
+                  ? "bg-[#00a8e8] border-[#00a8e8] text-white shadow-lg shadow-[#00a8e8]/20"
+                  : "bg-[#1c1c1c] border-white/8 text-white/60 hover:bg-white/8 hover:text-white"
+              }`}
+            >
+              <span className="text-[10px] uppercase tracking-wide mb-0.5 opacity-70">
+                {dayNames[d.getDay()]}
+              </span>
+              <span className="text-lg leading-none">{d.getDate()}</span>
+              {isToday && <span className="text-[9px] mt-0.5 opacity-60">сегодня</span>}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Schedule list */}
+      <div className="bg-[#161616] rounded-2xl overflow-hidden border border-white/8">
+        {schedule.map((item, i) => {
+          const isCur = i === curIdx;
+          const isPast = dayOffset === 0 && i < curIdx;
+
+          return (
+            <div key={i}>
+              {item.block && (
+                <div className="px-5 pt-4 pb-1">
+                  <span className="text-[#a78bfa] text-xs font-semibold uppercase tracking-widest">{item.block}</span>
+                </div>
+              )}
+              <div
+                className={`flex items-start gap-4 px-5 py-4 transition-colors ${
+                  isCur
+                    ? "bg-[#00a8e8]/12 border-l-4 border-[#00a8e8]"
+                    : isPast
+                    ? "opacity-30"
+                    : "hover:bg-white/3"
+                } ${i < schedule.length - 1 ? "border-b border-white/5" : ""}`}
+              >
+                <span className={`font-mono text-sm w-12 shrink-0 pt-0.5 ${isCur ? "text-[#00a8e8] font-bold" : "text-white/40"}`}>
+                  {item.time}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className={`text-sm font-semibold ${isCur ? "text-white" : isPast ? "text-white/55" : "text-white/85"}`}>
+                      {item.title}
+                    </p>
+                    {item.rating && (
+                      <span className="text-[10px] text-white/30 border border-white/15 rounded px-1 py-0.5 shrink-0 leading-none">
+                        {item.rating}
+                      </span>
+                    )}
+                    {isCur && (
+                      <span className="bg-[#00a8e8] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0">
+                        СЕЙЧАС В ЭФИРЕ
+                      </span>
+                    )}
+                  </div>
+                  {item.desc && (
+                    <p className="text-white/30 text-xs mt-1 leading-relaxed line-clamp-2">{item.desc}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Watch live button */}
+      <div className="mt-5">
+        <button
+          onClick={onWatchLive}
+          className="inline-flex items-center gap-2 bg-[#00a8e8] hover:bg-sky-400 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm"
+        >
+          <Icon name="Tv" size={15} /> Смотреть Карусель онлайн
+        </button>
+      </div>
+    </div>
+  );
+}
+
+type Section = "home" | "cartoons" | "tv" | "schedule" | "karusel" | "favorites";
 
 // ─── NAV ──────────────────────────────────────────────────────────────────────
 
@@ -232,6 +432,7 @@ function NavBar({ active, setActive, searchOpen, setSearchOpen }: {
     { id: "cartoons", label: "Мультсериалы" },
     { id: "tv", label: "ТВ-каналы" },
     { id: "schedule", label: "Программа" },
+    { id: "karusel", label: "🎠 Карусель" },
     { id: "favorites", label: "Избранное" },
   ];
 
@@ -911,6 +1112,7 @@ export default function Index() {
       )}
       {section === "tv" && <TVSection initialChannelId={selectedTvChannel} />}
       {section === "schedule" && <ScheduleSection />}
+      {section === "karusel" && <KaruselScheduleSection onWatchLive={() => openTV("karusel")} />}
       {section === "favorites" && <FavoritesSection favorites={favorites} toggleFav={toggleFav} onSelect={openCartoon} />}
     </div>
   );
